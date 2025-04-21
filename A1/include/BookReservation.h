@@ -19,24 +19,33 @@ public:
     std::string patronID;
     std::string bookISBN;
 
-    ReservationRecord(std::string& patronID, std::string& bookISBN);
-    ReservationRecord(const Patron& patron, const Book& book);
+    ReservationRecord(std::string &patronID, std::string &bookISBN);
+
+    ReservationRecord(const Patron &patron, const Book &book);
+
     ReservationRecord() = default;
 };
 
 class BookReservationManagementSystem {
 public:
     explicit BookReservationManagementSystem(int maxPendingReservations);
-    void indexBookToDB(const Book& book);
-    void enqueueReservation(const Patron& patron, const Book& book);
+
+    void indexBookToDB(const Book &book);
+
+    void enqueueReservation(const Patron &patron, const Book &book);
+
     ReservationRecord processReservation();
+
     CircularQueue<ReservationRecord> pendingReservations;
     Stack<ReservationRecord> fulfilledReservations;
     std::vector<Book> booksDB;
+
 private:
-    void enqueueReservation(const ReservationRecord& reservation);
+    void enqueueReservation(const ReservationRecord &reservation);
+
     int maxPendingReservations;
 };
 
+#include "../src/BookReservation.cpp"
 
 #endif //BOOKRESERVATION_H

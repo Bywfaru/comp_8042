@@ -16,4 +16,5 @@ add_executable(8042_Assignment_1
         tests/BookReservationTests.h
         main.cpp
         src/Stack.cpp
-        src/CircularQueue.cpp)
+        src/CircularQueue.cpp
+        src/BookReservation.cpp)
