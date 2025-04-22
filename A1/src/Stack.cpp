@@ -1,7 +1,7 @@
 #include "../include/Stack.h"
 
 template<typename T>
-Stack<T>::Stack() : currentSize(0), buffer() {
+Stack<T>::Stack() : buffer(), currentSize(0) {
 }
 
 template<typename T>
