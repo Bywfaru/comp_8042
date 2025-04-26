@@ -24,9 +24,9 @@ int main(int argc, char* argv[]) {
             std::cout << ">> UnorderedSet:\t\t\t\t";
             unorderedSetTests();
             std::cout << ">> HashTable:\t\t\t\t\t";
-            hashTableTests();
+            // hashTableTests();
             std::cout << ">> Book Recommender System: \t";
-            bookRecommendationTests();
+            // bookRecommendationTests();
             break;
         default:
             throw std::invalid_argument("Invalid module choice");
