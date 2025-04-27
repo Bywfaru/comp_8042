@@ -1,3 +1,0 @@
-C:/School/BCIT/COMP8042/Assignments/A1/cmake-build-debug/CMakeFiles/8042_Assignment_1.dir
-C:/School/BCIT/COMP8042/Assignments/A1/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/School/BCIT/COMP8042/Assignments/A1/cmake-build-debug/CMakeFiles/rebuild_cache.dir

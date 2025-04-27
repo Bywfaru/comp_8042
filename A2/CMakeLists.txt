@@ -15,4 +15,5 @@ add_executable(8042_Assignment_2
         tests/HashTableTests.h
         tests/BookRecommendationTests.h
         main.cpp
-        src/UnorderedSet.cpp)
+        src/UnorderedSet.cpp
+        src/BookRecommendation.cpp)
