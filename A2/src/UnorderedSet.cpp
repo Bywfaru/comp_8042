@@ -194,3 +194,39 @@ void UnorderedSet<Key>::fixRedRedViolation(Node<Key> *node) {
     }
 }
 
+template<typename Key>
+Node<Key> findMin(Node<Key> node) {
+    Node<Key> *minNode = node;
+
+    while (minNode->left != nullptr) {
+        minNode = minNode->left;
+    }
+
+    return minNode;
+}
+
+/**
+ * Deletes the node with the specified key if it has at most one child.
+ *
+ * @param node The node with the key to delete
+ */
+template<typename Key>
+void UnorderedSet<Key>::deleteOneChild(Node<Key> *node) {
+    // If the node does not exist, do nothing
+    if (!search(node->key)) return;
+
+    // If the node is a leaf node
+    if (node->left == nullptr && node->right == nullptr) {
+    }
+    // If the node has 2 children
+    else if (node->left != nullptr && node->right != nullptr) {
+    }
+    // If the node has 1 child
+    else {
+    }
+
+    setSize -= 1;
+
+    delete node;
+}
+
