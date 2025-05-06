@@ -194,3 +194,74 @@ void UnorderedSet<Key>::fixRedRedViolation(Node<Key> *node) {
     }
 }
 
+template<typename Key>
+Node<Key> findMin(Node<Key> node) {
+    Node<Key> *minNode = node;
+
+    while (minNode->left != nullptr) {
+        minNode = minNode->left;
+    }
+
+    return minNode;
+}
+
+/**
+ * Deletes the node with the specified key if it has at most one child.
+ *
+ * @param node The node with the key to delete
+ */
+template<typename Key>
+void UnorderedSet<Key>::deleteOneChild(Node<Key> *node) {
+    // If the node does not exist, do nothing
+    if (!search(node->key)) return;
+
+    const Node<Key> *parent = node->parent;
+    const Node<Key> *rightChild = node->right;
+    const Node<Key> *leftChild = node->left;
+    const Color color = node->color;
+
+    if (color == Color::RED) {
+        // If the node has a parent
+        if (parent != nullptr) {
+            if (parent->left == node) {
+                parent->left = nullptr;
+            } else {
+                parent->right = nullptr;
+            }
+        }
+
+        // If the node is a leaf node
+        if (leftChild == nullptr && rightChild == nullptr) {
+            delete node;
+        }
+        // Else, if the node has 2 children
+        else if (leftChild != nullptr && rightChild != nullptr) {
+        }
+        // Else, the node has 1 child
+        else {
+            // 1. Find the min node in the right subtree
+            Node<Key> *minNode = &findMin(rightChild);
+
+            // If a min node was found in the right subtree
+            if (minNode != nullptr) {
+                minNode->parent= node->parent;
+
+
+            }
+            // Else, if the left node exists
+            else if (leftChild != nullptr) {
+
+            }
+
+        }
+
+        // Reattach to parent
+    } else {
+
+    }
+
+    setSize -= 1;
+
+    delete node;
+}
+
