@@ -24,9 +24,10 @@ bool UnorderedSet<Key>::insert(const Key &key) {
     // Check if the key already exists
     if (search(key)) return false;
 
-    Node<Key> *newNode(key);
-    Node<Key> currentNode(root);
-    Node<Key> parent = currentNode;
+    // Node<Key> newNode(key);
+    auto *newNode = new Node<Key>(key);
+    Node<Key> *currentNode = root;
+    Node<Key> *parent = currentNode;
 
     setSize += 1;
 
@@ -53,16 +54,7 @@ bool UnorderedSet<Key>::insert(const Key &key) {
         }
     }
 
-    // Detect and handle violations
-    if (currentNode->color != Color::RED || currentNode->color != parent->color) return true;
-
-    Node<Key> uncle = parent->key < currentNode->key ? parent->right : parent->left;
-
-    if (uncle->color == Color::RED) {
-        // If uncle is red, recolour all nodes except the new node in the subtree
-    } else {
-        // If uncle is black or null, rotate
-    }
+    if (currentNode->color == Color::RED && parent->color == Color::RED) fixRedRedViolation(currentNode);
 
     return true;
 }
@@ -436,4 +428,41 @@ void UnorderedSet<Key>::deleteOneChild(Node<Key> *node) {
     setSize -= 1;
 
     delete node;
+}
+
+/**
+ * Recursively updates the size of the subtree rooted at the given node.
+ */
+template<typename Key>
+void UnorderedSet<Key>::updateSize() {
+}
+
+/**
+ * Recursively clears the Red-Black Tree starting from the given node.
+ *
+ * @param node The node to start clearing the Red-Black Tree from
+ */
+template<typename Key>
+void UnorderedSet<Key>::clearRecursive(Node<Key> *node) {
+    if (node == nullptr) return;
+
+    clearRecursive(node->left);
+    node->left = nullptr;
+
+    clearRecursive(node->right);
+    node->right = nullptr;
+
+    delete node;
+}
+
+template<typename Key>
+bool UnorderedSet<Key>::erase(const Key &key) {
+}
+
+template<typename Key>
+void UnorderedSet<Key>::clear() {
+}
+
+template<typename Key>
+Iterator UnorderedSet<Key>::begin() {
 }
