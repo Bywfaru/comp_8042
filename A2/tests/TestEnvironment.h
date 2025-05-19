@@ -8,6 +8,10 @@
 #include "../include/Utils.h"
 
 static inline int a_assert(bool condition) {
+    if (!condition) {
+        std::cout << "Assertion failed!" << std::endl;
+    }
+
     return condition ? 1 : 0;
 }
 
@@ -42,6 +46,7 @@ public:
     BorrowRecord record7;
     BorrowRecord record8;
     BorrowRecord record9;
+
     TestEnvironment() {
         user1 = Patron();
         user1.ID = "user1";
@@ -106,7 +111,7 @@ public:
         book10.ISBN = "0515118567";
         book10.title = "Darkest Instinct";
         book10.author = "Robert W. Walker";
-        
+
         record1.bookISBN = book1.ISBN;
         record1.patronId = user1.ID;
         record1.checkoutDate = Date::parseDate("2022-09-01");

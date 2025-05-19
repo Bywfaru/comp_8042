@@ -58,6 +58,8 @@ bool UnorderedSet<Key>::insert(const Key &key) {
 
     if (newNode->color == Color::RED && parent->color == Color::RED) fixRedRedViolation(newNode);
 
+    root->color = Color::BLACK;
+
     return true;
 }
 
@@ -73,7 +75,11 @@ void UnorderedSet<Key>::rotateLeft(Node<Key> *node) {
     Node<Key> *greatGrandparent = grandparent->parent;
 
     parent->parent = greatGrandparent;
-    grandparent->parent = parent;
+
+    if (grandparent != nullptr) {
+        grandparent->parent = parent;
+        grandparent->right = parent->left;
+    }
 
     // Update the great-grandparent if it exists
     if (greatGrandparent != nullptr) {
@@ -82,9 +88,10 @@ void UnorderedSet<Key>::rotateLeft(Node<Key> *node) {
         } else {
             greatGrandparent->right = node;
         }
+    } else {
+        root = parent;
     }
 
-    grandparent->right = parent->left;
     parent->left = grandparent;
 }
 
@@ -97,10 +104,14 @@ template<typename Key>
 void UnorderedSet<Key>::rotateRight(Node<Key> *node) {
     Node<Key> *parent = node;
     Node<Key> *grandparent = node->parent;
-    Node<Key> *greatGrandparent = grandparent->parent;
+    Node<Key> *greatGrandparent = grandparent != nullptr ? grandparent->parent : nullptr;
 
     parent->parent = greatGrandparent;
-    parent->parent = parent;
+
+    if (grandparent != nullptr) {
+        grandparent->parent = parent;
+        grandparent->left = parent->right;
+    }
 
     // Update the great-grandparent if it exists
     if (greatGrandparent != nullptr) {
@@ -109,9 +120,10 @@ void UnorderedSet<Key>::rotateRight(Node<Key> *node) {
         } else {
             greatGrandparent->right = node;
         }
+    } else {
+        root = parent;
     }
 
-    grandparent->left = parent->left;
     parent->right = grandparent;
 }
 
@@ -124,15 +136,16 @@ template<typename Key>
 void UnorderedSet<Key>::fixRedRedViolation(Node<Key> *node) {
     Node<Key> *parent = node->parent;
 
-
     // If the node is not red nor is its parent red, there is no red-red violation
     if (parent == nullptr || node->color != Color::RED || node->color != parent->color) return;
 
-    Node<Key> *uncle = parent->key < node->key ? parent->right : parent->left;
     Node<Key> *grandparent = parent->parent;
+    Node<Key> *uncle = nullptr;
+
+    if (grandparent != nullptr) uncle = parent->key < grandparent->key ? grandparent->right : grandparent->left;
 
     // If uncle is red
-    if (uncle->color == Color::RED) {
+    if (uncle != nullptr && uncle->color == Color::RED) {
         // 1. Recolour the parent and uncle as black
         // 2. Recolour the grandparent as red
         // 3. Repeat the process for the grandparent
@@ -153,7 +166,11 @@ void UnorderedSet<Key>::fixRedRedViolation(Node<Key> *node) {
         //   - Swap colours of grandparent and the inserted node
 
         // If L case
-        if (grandparent->left->key == parent->key) {
+        if (
+            grandparent != nullptr
+            && grandparent->left != nullptr
+            && grandparent->left->key == parent->key
+        ) {
             // If LL case
             if (parent->left->key == node->key) {
                 // 1. Rotation
@@ -172,12 +189,16 @@ void UnorderedSet<Key>::fixRedRedViolation(Node<Key> *node) {
         // If R case
         else {
             // If RR case
-            if (parent->right->key == node->key) {
+            if (parent->right != nullptr && parent->right->key == node->key) {
                 // 1. Rotation
                 rotateLeft(parent);
 
                 // 2. Recolour
-                grandparent->color = grandparent->color == Color::RED ? Color::BLACK : Color::RED;
+                if (grandparent != nullptr)
+                    grandparent->color = grandparent->color == Color::RED
+                                             ? Color::BLACK
+                                             : Color::RED;
+
                 parent->color = Color::BLACK;
             }
             // If RL case
@@ -227,9 +248,8 @@ bool UnorderedSet<Key>::search(const Key &key) const {
 
 template<typename Key>
 size_t UnorderedSet<Key>::size() const {
-    return getSize(root);
+    return setSize;
 }
-
 
 /**
  * Recursively calculates the size of the subtree rooted at the given node.
@@ -271,8 +291,11 @@ void UnorderedSet<Key>::deleteFix(Node<Key> *node) {
 
     if (parent != nullptr) {
         sibling = node->key < parent->key ? parent->left : parent->right;
-        innerNephew = node->key < parent->key ? sibling->left : sibling->right;
-        outerNephew = node->key < parent->key ? sibling->right : sibling->left;
+
+        if (sibling != nullptr) {
+            innerNephew = node->key < parent->key ? sibling->left : sibling->right;
+            outerNephew = node->key < parent->key ? sibling->right : sibling->left;
+        }
     }
 
     // Case 2: If the blue node is the root, recolour it to black and exit.
@@ -285,7 +308,8 @@ void UnorderedSet<Key>::deleteFix(Node<Key> *node) {
     // case for the parent.
     else if (
         // Blue node's sibling is black
-        (sibling == nullptr || sibling->color == Color::BLACK) &&
+        sibling != nullptr &&
+        sibling->color == Color::BLACK &&
         // and both of its nephews are also black
         (sibling->left == nullptr || sibling->left->color == Color::BLACK) &&
         (sibling->right == nullptr || sibling->right->color == Color::BLACK)
@@ -309,7 +333,7 @@ void UnorderedSet<Key>::deleteFix(Node<Key> *node) {
     // 1. Swap the colour of the blue node's sibling and parent
     // 2. Rotate the parent in the direction of the blue node
     // 3. Re-apply the suitable case for the blue node
-    else if (sibling->color == Color::RED) {
+    else if (sibling != nullptr && sibling->color == Color::RED) {
         // 1. Swap the colour of the blue node's sibling and parent
         sibling->color = Color::BLACK;
         parent->color = Color::RED;
@@ -330,7 +354,8 @@ void UnorderedSet<Key>::deleteFix(Node<Key> *node) {
     // 3. Apply case 6
     else if (
         // Blue node's sibling is black
-        (sibling == nullptr || sibling->color == Color::BLACK) &&
+        sibling != nullptr &&
+        sibling->color == Color::BLACK &&
         // the outer nephew is black
         (outerNephew == nullptr || outerNephew->color == Color::BLACK) &&
         // the inner nephew is red
@@ -357,7 +382,8 @@ void UnorderedSet<Key>::deleteFix(Node<Key> *node) {
     // 4. Recolour the blue node to black and exit
     else if (
         // Blue node's sibling is black
-        (sibling == nullptr || sibling->color == Color::BLACK) &&
+        sibling != nullptr &&
+        sibling->color == Color::BLACK &&
         // the outer nephew is red
         outerNephew->color == Color::RED
     ) {
@@ -495,6 +521,8 @@ void UnorderedSet<Key>::clear() {
 
 template<typename Key>
 typename UnorderedSet<Key>::Iterator UnorderedSet<Key>::begin() const {
+    if (root == nullptr) return Iterator(nullptr);
+
     Node<Key> *smallestNode = root;
 
     while (smallestNode->left != nullptr) {
