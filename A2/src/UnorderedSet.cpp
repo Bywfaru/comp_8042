@@ -70,29 +70,44 @@ bool UnorderedSet<Key>::insert(const Key &key) {
  */
 template<typename Key>
 void UnorderedSet<Key>::rotateLeft(Node<Key> *node) {
-    Node<Key> *parent = node;
-    Node<Key> *grandparent = node->parent;
-    Node<Key> *greatGrandparent = grandparent->parent;
+    Node<Key> *parent = node->parent;
 
-    parent->parent = greatGrandparent;
+    if (parent != nullptr && parent->right != nullptr && parent->right->key == node->key) {
+        // 1. Promote the given node
+        // 2. Demote the given node's parent
+        node->parent = parent->parent;
+        parent->parent = node;
+        parent->right = node->left;
+        node->left = parent;
 
-    if (grandparent != nullptr) {
-        grandparent->parent = parent;
-        grandparent->right = parent->left;
-    }
-
-    // Update the great-grandparent if it exists
-    if (greatGrandparent != nullptr) {
-        if (greatGrandparent->left == grandparent) {
-            greatGrandparent->left = node;
+        if (node->parent != nullptr) {
+            if (node->parent->key < node->key) {
+                node->parent->left = node;
+            } else {
+                node->parent->right = node;
+            }
         } else {
-            greatGrandparent->right = node;
+            root = node;
         }
-    } else {
-        root = parent;
-    }
+    } else if (node->right != nullptr) {
+        // 1. Demote the given node
+        // 2. Promote the given node's right child
+        node->right->parent = node->parent;
+        node->parent = node->right;
 
-    parent->left = grandparent;
+
+        if (node->right->parent != nullptr) {
+            if (node->right->parent->key < node->key) {
+                node->right->parent->left = node->right;
+            } else {
+                node->right->parent->right = node->right;
+            }
+        } else {
+            root = node->right;
+        }
+
+        node->right = node->right->left;
+    }
 }
 
 /**
@@ -102,29 +117,43 @@ void UnorderedSet<Key>::rotateLeft(Node<Key> *node) {
  */
 template<typename Key>
 void UnorderedSet<Key>::rotateRight(Node<Key> *node) {
-    Node<Key> *parent = node;
-    Node<Key> *grandparent = node->parent;
-    Node<Key> *greatGrandparent = grandparent != nullptr ? grandparent->parent : nullptr;
+    Node<Key> *parent = node->parent;
 
-    parent->parent = greatGrandparent;
+    if (parent != nullptr && parent->left != nullptr && parent->left->key == node->key) {
+        // 1. Promote the given node
+        // 2. Demote the given node's parent
+        node->parent = parent->parent;
+        parent->parent = node;
+        parent->left = node->right;
+        node->right = parent;
 
-    if (grandparent != nullptr) {
-        grandparent->parent = parent;
-        grandparent->left = parent->right;
-    }
-
-    // Update the great-grandparent if it exists
-    if (greatGrandparent != nullptr) {
-        if (greatGrandparent->left == grandparent) {
-            greatGrandparent->left = node;
+        if (node->parent != nullptr) {
+            if (node->parent->key < node->key) {
+                node->parent->left = node;
+            } else {
+                node->parent->right = node;
+            }
         } else {
-            greatGrandparent->right = node;
+            root = node;
         }
-    } else {
-        root = parent;
-    }
+    } else if (node->left != nullptr) {
+        // 1. Demote the given node
+        // 2. Promote the given node's left child
+        node->left->parent = node->parent;
+        node->parent = node->left;
 
-    parent->right = grandparent;
+        if (node->left->parent != nullptr) {
+            if (node->left->parent->key < node->key) {
+                node->left->parent->left = node->left;
+            } else {
+                node->left->parent->right = node->left;
+            }
+        } else {
+            root = node->left;
+        }
+
+        node->left = node->left->right;
+    }
 }
 
 /**
