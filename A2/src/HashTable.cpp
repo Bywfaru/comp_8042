@@ -23,8 +23,14 @@ HashTable<KeyType, ValueType>::HashTable(const unsigned int size, const double t
  */
 template<typename KeyType, typename ValueType>
 typename HashTable<KeyType, ValueType>::Iterator HashTable<KeyType, ValueType>::begin() {
-    return Iterator(hashTable[0]);
+    auto it = hashTable.begin();
+    // Skip to first occupied bucket if current one is not occupied
+    while (it != hashTable.end() && !it->occupied) {
+        ++it;
+    }
+    return Iterator(it, hashTable.end());
 }
+
 
 /**
  * Returns the end of the hash table.
@@ -33,8 +39,9 @@ typename HashTable<KeyType, ValueType>::Iterator HashTable<KeyType, ValueType>::
  */
 template<typename KeyType, typename ValueType>
 typename HashTable<KeyType, ValueType>::Iterator HashTable<KeyType, ValueType>::end() {
-    return Iterator(hashTable[tableSize]);
+    return Iterator(hashTable.end(), hashTable.end());
 }
+
 
 /**
  * Returns the value corresponding to the given key if it exists.
@@ -55,7 +62,7 @@ ValueType &HashTable<KeyType, ValueType>::operator[](const KeyType &key) {
         currentHop += 1;
     }
 
-    return nullptr;
+    throw std::runtime_error("Key not found");
 }
 
 /**
@@ -70,8 +77,11 @@ void HashTable<KeyType, ValueType>::updateValueForKey(const KeyType &key, ValueT
     int currentHop = 0;
 
     while (currentHop < HOP_RANGE) {
-        if (hashTable[(startingIndex + currentHop) % tableSize].key == key)
-            return hashTable[(startingIndex + currentHop) % tableSize].value = newValue;
+        if (hashTable[(startingIndex + currentHop) % tableSize].key == key) {
+            hashTable[(startingIndex + currentHop) % tableSize].value = newValue;
+
+            return;
+        }
 
         currentHop += 1;
     }
@@ -89,7 +99,7 @@ void HashTable<KeyType, ValueType>::insert(const KeyType &key, const ValueType &
     if (loadFactor() > loadFactorThreshold) return;
 
     const int startingIndex = hashKey(key, tableSize);
-    int currentHop = 0;
+    unsigned int currentHop = 0;
 
     while (currentHop < HOP_RANGE) {
         const int index = (startingIndex + currentHop) % tableSize;
@@ -112,7 +122,7 @@ void HashTable<KeyType, ValueType>::insert(const KeyType &key, const ValueType &
     try {
         // If we reach this point, that means the key's home neighbourhood is full, and we should try to shift an empty
         // bucket into it if possible
-        int emptyIndex = findFreeSlot(hashTable, startingIndex, currentHop);
+        unsigned int emptyIndex = findFreeSlot(hashTable, startingIndex, currentHop);
         int index = emptyIndex == 0 ? tableSize - 1 : emptyIndex - 1;
 
         while (index != startingIndex) {
@@ -247,8 +257,8 @@ double HashTable<KeyType, ValueType>::loadFactor() const {
  * @return The index of the empty slot
  */
 template<typename KeyType, typename ValueType>
-unsigned int HashTable<KeyType, ValueType>::findFreeSlot(std::vector<Bucket> &cTable, const unsigned int startIndex,
-                                                         const unsigned int &currentHop) {
+unsigned int HashTable<KeyType, ValueType>::findFreeSlot(std::vector<Bucket> &cTable, unsigned int startIndex,
+                                                         unsigned int &currentHop) {
     unsigned int currentIndex = (startIndex + currentHop) % tableSize;
 
     while (currentIndex != startIndex) {
