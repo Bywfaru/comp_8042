@@ -72,41 +72,19 @@ template<typename Key>
 void UnorderedSet<Key>::rotateLeft(Node<Key> *node) {
     Node<Key> *parent = node->parent;
 
-    if (parent != nullptr && parent->right != nullptr && parent->right->key == node->key) {
-        // 1. Promote the given node
-        // 2. Demote the given node's parent
-        node->parent = parent->parent;
-        parent->parent = node;
-        parent->right = node->left;
-        node->left = parent;
+    node->parent = parent->parent;
+    parent->parent = node;
+    parent->right = node->left;
+    node->left = parent;
 
-        if (node->parent != nullptr) {
-            if (node->parent->key < node->key) {
-                node->parent->left = node;
-            } else {
-                node->parent->right = node;
-            }
+    if (node->parent != nullptr) {
+        if (node->key < node->parent->key) {
+            node->parent->left = node;
         } else {
-            root = node;
+            node->parent->right = node;
         }
-    } else if (node->right != nullptr) {
-        // 1. Demote the given node
-        // 2. Promote the given node's right child
-        node->right->parent = node->parent;
-        node->parent = node->right;
-
-
-        if (node->right->parent != nullptr) {
-            if (node->right->parent->key < node->key) {
-                node->right->parent->left = node->right;
-            } else {
-                node->right->parent->right = node->right;
-            }
-        } else {
-            root = node->right;
-        }
-
-        node->right = node->right->left;
+    } else {
+        root = node;
     }
 }
 
@@ -119,40 +97,19 @@ template<typename Key>
 void UnorderedSet<Key>::rotateRight(Node<Key> *node) {
     Node<Key> *parent = node->parent;
 
-    if (parent != nullptr && parent->left != nullptr && parent->left->key == node->key) {
-        // 1. Promote the given node
-        // 2. Demote the given node's parent
-        node->parent = parent->parent;
-        parent->parent = node;
-        parent->left = node->right;
-        node->right = parent;
+    node->parent = parent->parent;
+    parent->parent = node;
+    parent->left = node->right;
+    node->right = parent;
 
-        if (node->parent != nullptr) {
-            if (node->parent->key < node->key) {
-                node->parent->left = node;
-            } else {
-                node->parent->right = node;
-            }
+    if (node->parent != nullptr) {
+        if (node->key < node->parent->key) {
+            node->parent->left = node;
         } else {
-            root = node;
+            node->parent->right = node;
         }
-    } else if (node->left != nullptr) {
-        // 1. Demote the given node
-        // 2. Promote the given node's left child
-        node->left->parent = node->parent;
-        node->parent = node->left;
-
-        if (node->left->parent != nullptr) {
-            if (node->left->parent->key < node->key) {
-                node->left->parent->left = node->left;
-            } else {
-                node->left->parent->right = node->left;
-            }
-        } else {
-            root = node->left;
-        }
-
-        node->left = node->left->right;
+    } else {
+        root = node;
     }
 }
 
@@ -211,7 +168,7 @@ void UnorderedSet<Key>::fixRedRedViolation(Node<Key> *node) {
             }
             // If LR case
             else {
-                rotateLeft(parent);
+                rotateLeft(node);
                 rotateRight(node);
             }
         }
@@ -232,7 +189,7 @@ void UnorderedSet<Key>::fixRedRedViolation(Node<Key> *node) {
             }
             // If RL case
             else {
-                rotateRight(parent);
+                rotateRight(node);
                 rotateLeft(node);
             }
         }
