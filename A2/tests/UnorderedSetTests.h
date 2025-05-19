@@ -235,19 +235,15 @@ int unorderedSetTests() {
     std::pair<int, int> r4 = unorderedSetTestBalacingFunctionality();
     passedTests += r4.first;
     totalTests += r4.second;
-    std::cout << "unorderedSetTestBalacingFunctionality: " << r4.first << " /  " << r4.second << std::endl;
     std::pair<int, int> r3 = unorderedSetTestForGeneralDataStructures();
     passedTests += r3.first;
     totalTests += r3.second;
-    std::cout << "unorderedSetTestForGeneralDataStructures: " << r3.first << " /  " << r3.second << std::endl;
     std::pair<int, int> r1 = unorderedSetTestForBookDataStructure();
     passedTests += r1.first;
     totalTests += r1.second;
-    std::cout << "unorderedSetTestForBookDataStructure: " << r1.first << " /  " << r1.second << std::endl;
     std::pair<int, int> r2 = unorderedSetTestForUserDataStructure();
     passedTests += r2.first;
     totalTests += r2.second;
-    std::cout << "unorderedSetTestForUserDataStructure: " << r2.first << " /  " << r2.second << std::endl;
     double grade = static_cast<double>(passedTests * 100) / totalTests;
     grade = std::round(grade * 10) / 10;
     std::cout << "Total tests passed: " << passedTests << " out of " << totalTests << " (" << grade << "%)" <<
