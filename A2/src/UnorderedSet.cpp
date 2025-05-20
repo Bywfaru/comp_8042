@@ -196,6 +196,13 @@ void UnorderedSet<Key>::fixRedRedViolation(Node<Key> *node) {
     }
 }
 
+/**
+ * Finds the successor of the given node.
+ *
+ * @tparam Key The key's type
+ * @param node The node to find the successor of
+ * @return The successor node
+ */
 template<typename Key>
 Node<Key> *findSuccessor(Node<Key> *node) {
     if (node->right != nullptr) {
@@ -392,6 +399,11 @@ void UnorderedSet<Key>::deleteFix(Node<Key> *node) {
     }
 }
 
+/**
+ * Deletes the given child node.
+ *
+ * @param node Child to delete
+ */
 template<typename Key>
 void UnorderedSet<Key>::deleteOneChild(Node<Key> *node) {
     // If the node does not exist, do nothing
@@ -483,6 +495,12 @@ void UnorderedSet<Key>::clearRecursive(Node<Key> *node) {
     setSize -= 1;
 }
 
+/**
+ * Erases the given key.
+ *
+ * @param key Key to erase
+ * @return Whether the erase was successful
+ */
 template<typename Key>
 bool UnorderedSet<Key>::erase(const Key &key) {
     // Retrieve the node
@@ -499,12 +517,20 @@ bool UnorderedSet<Key>::erase(const Key &key) {
     return true;
 }
 
+/**
+ * Clears the unordered set of all keys.
+ */
 template<typename Key>
 void UnorderedSet<Key>::clear() {
     clearRecursive(root);
     root = nullptr;
 }
 
+/**
+ * Returns the beginning of the unordered set.
+ *
+ * @return The beginning of the unordered set
+ */
 template<typename Key>
 typename UnorderedSet<Key>::Iterator UnorderedSet<Key>::begin() const {
     if (root == nullptr) return Iterator(nullptr);
@@ -518,6 +544,11 @@ typename UnorderedSet<Key>::Iterator UnorderedSet<Key>::begin() const {
     return Iterator(smallestNode);
 }
 
+/**
+ * Returns the end of the unordered set.
+ *
+ * @return The end of the unordered set
+ */
 template<typename Key>
 typename UnorderedSet<Key>::Iterator UnorderedSet<Key>::end() const {
     return Iterator(nullptr);
