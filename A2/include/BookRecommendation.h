@@ -16,15 +16,21 @@
 
 class BookRecommendation {
 public:
-    void addUserBorrowedBook(Patron& userID, Book& book);
-    std::vector<Book> getBookRecommendations(const std::string& targetUserID, int numRecommendations, int neighborhoodSize);
-    double calculateSimilarity(const std::string& userID1, const std::string& userID2);
-    UnorderedSet<std::string> getNeighborhood(const std::string& targetUserID, int neighborhoodSize);
-    UnorderedSet<Book> getRecommendedBooks(const UnorderedSet<std::string>& neighborhood, const std::string& targetUserID);
+    void addUserBorrowedBook(Patron &userID, Book &book);
+
+    std::vector<Book> getBookRecommendations(const std::string &targetUserID, int numRecommendations,
+                                             int neighborhoodSize);
+
+    double calculateSimilarity(const std::string &userID1, const std::string &userID2);
+
+    UnorderedSet<std::string> getNeighborhood(const std::string &targetUserID, int neighborhoodSize);
+
+    UnorderedSet<Book> getRecommendedBooks(const UnorderedSet<std::string> &neighborhood,
+                                           const std::string &targetUserID);
 
 private:
-    HashTable<std::string, UnorderedSet<Book>> userBorrowedBooks;
-    HashTable<std::string, UnorderedSet<Patron>> bookBorrowedByUsers;
+    HashTable<std::string, UnorderedSet<Book> > userBorrowedBooks;
+    HashTable<std::string, UnorderedSet<Patron> > bookBorrowedByUsers;
 };
 
 #endif //BOOKRECOMMENDATION_H

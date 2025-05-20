@@ -158,7 +158,7 @@ void UnorderedSet<Key>::fixRedRedViolation(Node<Key> *node) {
             && grandparent->left->key == parent->key
         ) {
             // If LL case
-            if (parent->left->key == node->key) {
+            if (parent->left != nullptr && parent->left->key == node->key) {
                 // 1. Rotation
                 rotateRight(parent);
 
@@ -234,7 +234,7 @@ bool UnorderedSet<Key>::search(const Key &key) const {
 
 template<typename Key>
 size_t UnorderedSet<Key>::size() const {
-    return setSize;
+    return getSize(root);
 }
 
 /**

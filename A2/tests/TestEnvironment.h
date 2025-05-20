@@ -9,7 +9,7 @@
 
 static inline int a_assert(bool condition) {
     if (!condition) {
-        std::cout << "Assertion failed!" << std::endl;
+        std::cout << "";
     }
 
     return condition ? 1 : 0;

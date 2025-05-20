@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include "tests/UnorderedSetTests.h"
 #include "tests/HashTableTests.h"
-// #include "tests/BookRecommendationTests.h"
+#include "tests/BookRecommendationTests.h"
 #include "include/LExceptions.h"
 /*
  * This is the driver file which directs the project on testing different modules.
@@ -25,8 +25,8 @@ int main(int argc, char *argv[]) {
             unorderedSetTests();
             std::cout << ">> HashTable:\t\t\t\t\t";
             hashTableTests();
-        // std::cout << ">> Book Recommender System: \t";
-        // bookRecommendationTests();
+            std::cout << ">> Book Recommender System: \t";
+            bookRecommendationTests();
             break;
         default:
             throw std::invalid_argument("Invalid module choice");

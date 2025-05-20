@@ -9,7 +9,7 @@
 #include "TestEnvironment.h"
 #include "../include/BookRecommendation.h"
 
-BookRecommendation setUp(){
+BookRecommendation setUp() {
     TestEnvironment te;
     BookRecommendation bookRecommendation;
     bookRecommendation.addUserBorrowedBook(te.user1, te.book1);
@@ -89,8 +89,8 @@ std::pair<int, int> bookRecommendationTestGetBookRecommendations2() {
     BookRecommendation bookRecommendation = setUp();
     std::vector<Book> recommendations = bookRecommendation.getBookRecommendations("user4", 2, 10);
     passedTests += a_assert(recommendations.size() == 2);
-    Book& b1 = recommendations.at(0);
-    Book& b2 = recommendations.at(1);
+    Book &b1 = recommendations.at(0);
+    Book &b2 = recommendations.at(1);
     passedTests += a_assert(b1.ISBN == "0486411044");
     passedTests += a_assert(b1.title == "First Fig and Other Poems (Dover Thrift Editions)");
     passedTests += a_assert(b2.ISBN == "0446973483");
@@ -112,27 +112,57 @@ int bookRecommendationTests() {
     std::pair<int, int> r1 = bookRecommendationTestCalculateSimilarity();
     passedTests += r1.first;
     totalTests += r1.second;
+    // std::cout << "bookRecommendationTestCalculateSimilarity: " << r1.first << " / " << r1.second << " (" << (
+    //     static_cast<
+    //         double>(r1.first) / r1.
+    //     second) * 100 << "%)" << std::endl;
     std::pair<int, int> r2 = bookRecommendationTestGetNeighborhood();
     passedTests += r2.first;
     totalTests += r2.second;
+    // std::cout << "bookRecommendationTestGetNeighborhood: " << r2.first << " / " << r2.second << " (" << (static_cast<
+    //         double>(r2.first) / r2.
+    //     second) * 100 << "%)" << std::endl;
     std::pair<int, int> r3 = bookRecommendationTestGetRecommendedBooks1();
     passedTests += r3.first;
     totalTests += r3.second;
+    // std::cout << "bookRecommendationTestGetRecommendedBooks1: " << r3.first << " / " << r3.second << " (" << (
+    //     static_cast
+    //     <
+    //         double>(r3.first) / r3.
+    //     second) * 100 << "%)" << std::endl;
     std::pair<int, int> r4 = bookRecommendationTestGetRecommendedBooks2();
     passedTests += r4.first;
     totalTests += r4.second;
+    // std::cout << "bookRecommendationTestGetRecommendedBooks2: " << r4.first << " / " << r4.second << " (" << (
+    //     static_cast
+    //     <
+    //         double>(r4.first) / r4.
+    //     second) * 100 << "%)" << std::endl;
     std::pair<int, int> r5 = bookRecommendationTestGetBookRecommendations1();
     passedTests += r5.first;
     totalTests += r5.second;
+    // std::cout << "bookRecommendationTestGetBookRecommendations1: " << r5.first << " / " << r5.second << " (" <<
+    // (static_cast<
+    //      double>(r5.first) / r5.
+    //  second) * 100 << "%)" << std::endl;
     std::pair<int, int> r6 = bookRecommendationTestGetBookRecommendations2();
     passedTests += r6.first;
     totalTests += r6.second;
+    // std::cout << "bookRecommendationTestGetBookRecommendations2: " << r6.first << " / " << r6.second << " (" <<
+    // (static_cast<
+    //      double>(r6.first) / r6.
+    //  second) * 100 << "%)" << std::endl;
     std::pair<int, int> r7 = bookRecommendationTestGetBookRecommendations3();
     passedTests += r7.first;
     totalTests += r7.second;
+    // std::cout << "bookRecommendationTestGetBookRecommendations3: " << r7.first << " / " << r7.second << " (" <<
+    // (static_cast<
+    //      double>(r7.first) / r7.
+    //  second) * 100 << "%)" << std::endl;
     double grade = static_cast<double>(passedTests * 100) / totalTests;
     grade = std::round(grade * 10) / 10;
-    std::cout << "Total tests passed: " << passedTests << " out of " << totalTests << " (" << grade << "%)"  << std::endl;
+    std::cout << "Total tests passed: " << passedTests << " out of " << totalTests << " (" << grade << "%)" <<
+            std::endl;
     return 0;
 }
 

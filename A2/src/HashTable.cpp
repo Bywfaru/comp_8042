@@ -1,5 +1,13 @@
 #include "../include/HashTable.h"
 
+/**
+ * Calculates the hash key from the given key and table size.
+ *
+ * @tparam Key The type of the key
+ * @param key The key to hash
+ * @param tableSize The size of the hash table
+ * @return The calculated hash key
+ */
 template<typename Key>
 unsigned int hashKey(Key key, const unsigned int tableSize) {
     return std::hash<Key>{}(key) % tableSize;
@@ -57,9 +65,9 @@ ValueType &HashTable<KeyType, ValueType>::operator[](const KeyType &key) {
 
     while (currentHop < HOP_RANGE) {
         const int index = (startingIndex + currentHop) % tableSize;
-        if (hashTable[index].key == key && hashTable[index].occupied) {
-            return hashTable[index].value;
-        }
+
+        if (hashTable[index].key == key && hashTable[index].occupied) return hashTable[index].value;
+
         currentHop += 1;
     }
 
@@ -112,8 +120,6 @@ void HashTable<KeyType, ValueType>::updateValueForKey(const KeyType &key, ValueT
 template<typename KeyType, typename ValueType>
 void HashTable<KeyType, ValueType>::insert(const KeyType &key, const ValueType &value) {
     // If the load factor threshold is exceeded, rehash and retry insertion
-    double currentLoadFactor = loadFactor();
-
     if (loadFactor() >= loadFactorThreshold) {
         rehash();
         insert(key, value);
