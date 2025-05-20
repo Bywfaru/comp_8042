@@ -17,7 +17,7 @@ std::pair<int, int> hashTableTestForBookDataStructure() {
     bookTable.insert(env.book1.ISBN, env.book1);
     bookTable.insert(env.book2.ISBN, env.book2);
     passedTests += a_assert(bookTable.size() == 2);
-    Book *foundBook = bookTable.search(env.book1.ISBN);
+    Book* foundBook = bookTable.search(env.book1.ISBN);
     passedTests += a_assert(foundBook != nullptr);
     passedTests += a_assert(foundBook->ISBN == env.book1.ISBN);
     Book updatedBook = env.book1;
@@ -60,7 +60,7 @@ std::pair<int, int> hashTableTestForUserDataStructure() {
     userTable.insert(env.user1.ID, env.user1);
     userTable.insert(env.user2.ID, env.user2);
     passedTests += a_assert(userTable.size() == 2);
-    Patron *foundUser = userTable.search(env.user1.ID);
+    Patron* foundUser = userTable.search(env.user1.ID);
     passedTests += a_assert(foundUser != nullptr);
     passedTests += a_assert(foundUser->ID == env.user1.ID);
     Patron updatedUser = env.user1;
@@ -147,19 +147,18 @@ std::pair<int, int> hashTableTestForGeneralDataStructures() {
 int hashTableTests() {
     int passedTests = 0;
     int totalTests = 0;
-    std::pair<int, int> r3 = hashTableTestForGeneralDataStructures();
-    passedTests += r3.first;
-    totalTests += r3.second;
     std::pair<int, int> r1 = hashTableTestForBookDataStructure();
     passedTests += r1.first;
     totalTests += r1.second;
     std::pair<int, int> r2 = hashTableTestForUserDataStructure();
     passedTests += r2.first;
     totalTests += r2.second;
+    std::pair<int, int> r3 = hashTableTestForGeneralDataStructures();
+    passedTests += r3.first;
+    totalTests += r3.second;
     double grade = static_cast<double>(passedTests * 100) / totalTests;
     grade = std::round(grade * 10) / 10;
-    std::cout << "Total tests passed: " << passedTests << " out of " << totalTests << " (" << grade << "%)" <<
-            std::endl;
+    std::cout << "Total tests passed: " << passedTests << " out of " << totalTests << " (" << grade << "%)"  << std::endl;
     return 0;
 }
 #endif //HASHTABLETESTS_H

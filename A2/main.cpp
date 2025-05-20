@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Sayyedhassan Shavarani 2023
+* Copyright (c) Sayyedhassan Shavarani 2023
  * All rights reserved. Unauthorized redistribution is prohibited.
  */
 #include <iostream>
