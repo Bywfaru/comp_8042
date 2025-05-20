@@ -111,8 +111,15 @@ void HashTable<KeyType, ValueType>::updateValueForKey(const KeyType &key, ValueT
  */
 template<typename KeyType, typename ValueType>
 void HashTable<KeyType, ValueType>::insert(const KeyType &key, const ValueType &value) {
-    // If the load factor threshold is exceeded, do nothing
-    if (loadFactor() > loadFactorThreshold) return;
+    // If the load factor threshold is exceeded, rehash and retry insertion
+    double currentLoadFactor = loadFactor();
+
+    if (loadFactor() >= loadFactorThreshold) {
+        rehash();
+        insert(key, value);
+
+        return;
+    }
 
     const int startingIndex = hashKey(key, tableSize);
     unsigned int currentHop = 0;
@@ -261,7 +268,9 @@ unsigned int HashTable<KeyType, ValueType>::size() const {
 
 template<typename KeyType, typename ValueType>
 double HashTable<KeyType, ValueType>::loadFactor() const {
-    return static_cast<double>(size()) / tableSize;
+    double count = size();
+
+    return count / tableSize;
 }
 
 /**
@@ -269,12 +278,15 @@ double HashTable<KeyType, ValueType>::loadFactor() const {
  *
  * @param cTable The hash table to find a free slot in
  * @param startIndex The starting index to start the search from
- * @param currentHop The current hop (offeset)
+ * @param currentHop The current hop (offset)
  * @return The index of the empty slot
  */
 template<typename KeyType, typename ValueType>
-unsigned int HashTable<KeyType, ValueType>::findFreeSlot(std::vector<Bucket> &cTable, unsigned int startIndex,
-                                                         unsigned int &currentHop) {
+unsigned int HashTable<KeyType, ValueType>::findFreeSlot(
+    std::vector<Bucket> &cTable,
+    unsigned int startIndex,
+    unsigned int &currentHop
+) {
     unsigned int currentIndex = (startIndex + currentHop) % tableSize;
 
     while (currentIndex != startIndex) {
@@ -308,11 +320,10 @@ void HashTable<KeyType, ValueType>::rehash() {
 
     // 3. For each (non-deleted) item, compute the new hash value and insert it in the new table
     tableSize = newTableSize;
+    // Update the hash table to the new one
+    hashTable = newTable;
 
     for (unsigned int i = 0; i < oldTableSize; ++i) {
         if (oldTable[i].occupied) insert(oldTable[i].key, oldTable[i].value);
     }
-
-    // Update the hash table to the new one
-    hashTable = newTable;
 }

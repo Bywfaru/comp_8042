@@ -147,18 +147,15 @@ std::pair<int, int> hashTableTestForGeneralDataStructures() {
 int hashTableTests() {
     int passedTests = 0;
     int totalTests = 0;
-    std::pair<int, int> r1 = hashTableTestForBookDataStructure();
-    passedTests += r1.first;
-    totalTests += r1.second;
-    std::cout << "hashTableTestForBookDataStructure: " << r1.first << " / " << r1.second << std::endl;
-    std::pair<int, int> r2 = hashTableTestForUserDataStructure();
-    passedTests += r2.first;
-    totalTests += r2.second;
-    std::cout << "hashTableTestForUserDataStructure: " << r1.first << " / " << r1.second << std::endl;
     std::pair<int, int> r3 = hashTableTestForGeneralDataStructures();
     passedTests += r3.first;
     totalTests += r3.second;
-    std::cout << "hashTableTestForGeneralDataStructures: " << r1.first << " / " << r1.second << std::endl;
+    std::pair<int, int> r1 = hashTableTestForBookDataStructure();
+    passedTests += r1.first;
+    totalTests += r1.second;
+    std::pair<int, int> r2 = hashTableTestForUserDataStructure();
+    passedTests += r2.first;
+    totalTests += r2.second;
     double grade = static_cast<double>(passedTests * 100) / totalTests;
     grade = std::round(grade * 10) / 10;
     std::cout << "Total tests passed: " << passedTests << " out of " << totalTests << " (" << grade << "%)" <<
