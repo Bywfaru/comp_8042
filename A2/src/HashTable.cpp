@@ -51,18 +51,34 @@ typename HashTable<KeyType, ValueType>::Iterator HashTable<KeyType, ValueType>::
  */
 template<typename KeyType, typename ValueType>
 ValueType &HashTable<KeyType, ValueType>::operator[](const KeyType &key) {
+    // First try to find the key
     const int startingIndex = hashKey(key, tableSize);
     int currentHop = 0;
 
     while (currentHop < HOP_RANGE) {
         const int index = (startingIndex + currentHop) % tableSize;
+        if (hashTable[index].key == key && hashTable[index].occupied) {
+            return hashTable[index].value;
+        }
+        currentHop += 1;
+    }
 
-        if (hashTable[index].key == key) return hashTable[index].value;
+    // If key not found, insert a default-constructed value and return a reference to it
+    insert(key, ValueType());
+    // Now find the newly inserted value and return its reference
+    currentHop = 0;
+    while (currentHop < HOP_RANGE) {
+        const int index = (startingIndex + currentHop) % tableSize;
+
+        if (hashTable[index].key == key && hashTable[index].occupied) {
+            return hashTable[index].value;
+        }
 
         currentHop += 1;
     }
 
-    throw std::runtime_error("Key not found");
+    // This should never happen if insert worked correctly
+    throw std::runtime_error("Failed to insert value");
 }
 
 /**
@@ -183,7 +199,7 @@ ValueType *HashTable<KeyType, ValueType>::search(const KeyType &key) {
     while (currentHop < HOP_RANGE) {
         const int index = (startingIndex + currentHop) % tableSize;
 
-        if (hashTable[index].key == key) return &hashTable[index].value;
+        if (hashTable[index].key == key && hashTable[index].occupied) return &hashTable[index].value;
 
         currentHop += 1;
     }
@@ -205,7 +221,7 @@ bool HashTable<KeyType, ValueType>::remove(const KeyType &key) {
     while (currentHop < HOP_RANGE) {
         const int index = (startingIndex + currentHop) % tableSize;
 
-        if (hashTable[index].key == key) {
+        if (hashTable[index].key == key && hashTable[index].occupied) {
             hashTable[index].occupied = false;
 
             return true;
@@ -245,7 +261,7 @@ unsigned int HashTable<KeyType, ValueType>::size() const {
 
 template<typename KeyType, typename ValueType>
 double HashTable<KeyType, ValueType>::loadFactor() const {
-    return tableSize / size();
+    return static_cast<double>(size()) / tableSize;
 }
 
 /**
