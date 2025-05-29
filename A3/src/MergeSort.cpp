@@ -8,22 +8,9 @@ template<typename T>
 void MergeSort<T>::sort(std::vector<T> &arr) {
     if (arr.size() == 1) return;
 
-    std::vector<T> left, right;
     const int middleIndex = arr.size() / 2;
-
-    // Split the array into two halves
-    for (int i = 0; i < middleIndex; ++i) {
-        left.push_back(arr[i]);
-    }
-
-    for (int i = middleIndex; i < arr.size(); ++i) {
-        right.push_back(arr[i]);
-    }
-
-    sort(left);
-    sort(right);
-
-    merge(arr, left, right);
+    std::vector<T> left(arr.begin(), arr.begin() + middleIndex);
+    std::vector<T> right(arr.begin() + middleIndex + 1, arr.end());
 }
 
 /**
