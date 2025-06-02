@@ -5,6 +5,9 @@
  */
 template<typename T>
 void RadixSort<T>::sort() {
+    for (int i = 0; i < getMaxDigitCount(); i++) {
+        countingSort(i);
+    }
 }
 
 /**
@@ -15,8 +18,8 @@ template<typename T>
 int RadixSort<T>::getMaxDigitCount() {
     int maxDigitCount = 0;
 
-    for (int i = 0; i < elements_.size(); i++) {
-        const int digitCount = getDigitCount(elements_[i]);
+    for (T element: elements_) {
+        const int digitCount = getDigitCount(getKeyFunction_(element));
 
         if (digitCount > maxDigitCount) maxDigitCount = digitCount;
     }
@@ -47,7 +50,9 @@ void RadixSort<T>::countingSort(int digit) {
     std::vector<int> items;
 
     for (int i = 0; i < elements_.size(); i++) {
-        items.push_back(getDigitValue(elements_[i], digit));
+        const int key = getKeyFunction_(elements_[i]);
+
+        items.push_back(getDigitValue(key, digit + 1));
     }
 
     std::vector<int> counts(10, 0);
@@ -65,13 +70,26 @@ void RadixSort<T>::countingSort(int digit) {
     std::vector<int> runningSumShifted(runningSum.size(), 0);
 
     for (int i = 1; i < items.size(); i++) {
-        runningSumShifted[i] += runningSumShifted[i - 1];
+        runningSumShifted[i] = runningSum[i - 1];
     }
 
-    std::vector<int> sorted(items.size());
+    std::vector<T *> sorted(items.size(), nullptr);
 
     for (int i = 0; i < items.size(); i++) {
-        sorted[runningSumShifted[items[i]]] = i;
+        const int item = items[i];
+        int index = runningSumShifted[item];
+
+        while (sorted[index] != nullptr) {
+            index += 1;
+        }
+
+        sorted[index] = &elements_[i];
+    }
+
+    elements_.clear();
+
+    for (int i = 0; i < sorted.size(); i++) {
+        if (sorted[i] != nullptr) elements_.push_back(*sorted[i]);
     }
 }
 
