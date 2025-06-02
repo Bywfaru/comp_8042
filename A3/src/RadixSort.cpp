@@ -5,7 +5,9 @@
  */
 template<typename T>
 void RadixSort<T>::sort() {
-    for (int i = 0; i < getMaxDigitCount(); i++) {
+    const int maxDigitCount = getMaxDigitCount();
+
+    for (int i = 1; i <= maxDigitCount; i++) {
         countingSort(i);
     }
 }
@@ -52,7 +54,7 @@ void RadixSort<T>::countingSort(int digit) {
     for (int i = 0; i < elements_.size(); i++) {
         const int key = getKeyFunction_(elements_[i]);
 
-        items.push_back(getDigitValue(key, digit + 1));
+        items.push_back(getDigitValue(key, digit));
     }
 
     std::vector<int> counts(10, 0);
@@ -61,36 +63,28 @@ void RadixSort<T>::countingSort(int digit) {
         counts[item] += 1;
     }
 
-    std::vector<int> runningSum(counts.begin(), counts.end());
+    std::vector<int> runningSumShifted(counts.size(), 0);
 
-    for (int i = 1; i < runningSum.size(); i++) {
-        runningSum[i] += runningSum[i - 1];
+    for (int i = 0; i < counts.size() - 1; i++) {
+        runningSumShifted[i + 1] += runningSumShifted[i] + counts[i];
     }
 
-    std::vector<int> runningSumShifted(runningSum.size(), 0);
-
-    for (int i = 1; i < items.size(); i++) {
-        runningSumShifted[i] = runningSum[i - 1];
-    }
-
-    std::vector<T *> sorted(items.size(), nullptr);
+    std::vector<T> sorted(items.size());
+    std::vector<bool> indexOccupied(items.size(), false);
 
     for (int i = 0; i < items.size(); i++) {
         const int item = items[i];
         int index = runningSumShifted[item];
 
-        while (sorted[index] != nullptr) {
+        while (indexOccupied[index]) {
             index += 1;
         }
 
-        sorted[index] = &elements_[i];
+        indexOccupied[index] = true;
+        sorted[index] = elements_[i];
     }
 
-    elements_.clear();
-
-    for (int i = 0; i < sorted.size(); i++) {
-        if (sorted[i] != nullptr) elements_.push_back(*sorted[i]);
-    }
+    elements_ = sorted;
 }
 
 /**
@@ -101,5 +95,5 @@ void RadixSort<T>::countingSort(int digit) {
  */
 template<typename T>
 int RadixSort<T>::getDigitValue(int number, int digit) {
-    return number % static_cast<int>(pow(10, digit));
+    return (number % static_cast<int>(pow(10, digit))) / static_cast<int>(pow(10, digit - 1));;
 }
