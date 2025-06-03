@@ -61,25 +61,23 @@ void RadixSort<T>::countingSort(int digit) {
     }
 
 
-    std::vector<int> runningSumShifted(counts.size(), 0);
+    std::vector<int> prefixSum(counts.size(), 0);
 
-    for (int i = 0; i < counts.size() - 1; i++) {
-        runningSumShifted[i + 1] += runningSumShifted[i] + counts[i];
+    prefixSum[0] = counts[0];
+
+    for (int i = 1; i < counts.size(); i++) {
+        prefixSum[i] += prefixSum[i - 1] + counts[i];
     }
 
     std::vector<T> sorted(items.size());
-    std::vector<bool> indexOccupied(items.size(), false);
 
-    for (int i = 0; i < items.size(); i++) {
+    for (int i = items.size() - 1; i >= 0; i--) {
         const int item = items[i];
-        int index = runningSumShifted[item];
+        int index = prefixSum[item] - 1;
 
-        while (indexOccupied[index]) {
-            index += 1;
-        }
-
-        indexOccupied[index] = true;
         sorted[index] = elements_[i];
+
+        prefixSum[item] -= 1;
     }
 
     elements_ = sorted;
