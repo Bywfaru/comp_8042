@@ -50,18 +50,16 @@ int RadixSort<T>::getDigitCount(int number) {
 template<typename T>
 void RadixSort<T>::countingSort(int digit) {
     std::vector<int> items;
+    std::vector<int> counts(10, 0);
 
     for (int i = 0; i < elements_.size(); i++) {
         const int key = getKeyFunction_(elements_[i]);
+        const int item = getDigitValue(key, digit);
 
-        items.push_back(getDigitValue(key, digit));
-    }
-
-    std::vector<int> counts(10, 0);
-
-    for (const int item: items) {
+        items.push_back(item);
         counts[item] += 1;
     }
+
 
     std::vector<int> runningSumShifted(counts.size(), 0);
 
