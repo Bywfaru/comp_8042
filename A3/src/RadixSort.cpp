@@ -46,7 +46,10 @@ int RadixSort<T>::getDigitCount(int number) {
     return count;
 }
 
-
+/**
+ * Sorts the elements in-place by the given digit using counting sort.
+ * @param digit The digit to sort by
+ */
 template<typename T>
 void RadixSort<T>::countingSort(int digit) {
     std::vector<int> items;

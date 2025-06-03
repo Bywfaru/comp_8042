@@ -272,6 +272,10 @@ unsigned int HashTable<KeyType, ValueType>::size() const {
     return count;
 }
 
+/**
+ * Calculates the hash table's load factor.
+ * @return The hash table's load factor
+ */
 template<typename KeyType, typename ValueType>
 double HashTable<KeyType, ValueType>::loadFactor() const {
     double count = size();
